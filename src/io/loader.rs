@@ -15,7 +15,6 @@ use std::path::{Path, PathBuf};
 ///
 /// If downloading resources is also needed, use the [load_async] method instead.
 ///
-#[cfg(not(target_arch = "wasm32"))]
 pub fn load(paths: &[impl AsRef<Path>]) -> Result<RawAssets> {
     let mut raw_assets = load_single(paths)?;
     let mut dependencies = super::get_dependencies(&raw_assets);
@@ -27,19 +26,21 @@ pub fn load(paths: &[impl AsRef<Path>]) -> Result<RawAssets> {
     Ok(raw_assets)
 }
 
-#[cfg(not(target_arch = "wasm32"))]
 fn load_single(paths: &[impl AsRef<Path>]) -> Result<RawAssets> {
     let mut data_urls = HashSet::new();
+    #[cfg(not(target_arch = "wasm32"))]
     let mut local_paths = HashSet::new();
     for path in paths.iter() {
         let path = path.as_ref().to_path_buf();
         if is_data_url(&path) {
             data_urls.insert(path);
         } else {
+            #[cfg(not(target_arch = "wasm32"))]
             local_paths.insert(path);
         }
     }
     let mut raw_assets = RawAssets::new();
+    #[cfg(not(target_arch = "wasm32"))]
     load_from_disk(local_paths, &mut raw_assets)?;
     parse_data_urls(data_urls, &mut raw_assets)?;
     Ok(raw_assets)
