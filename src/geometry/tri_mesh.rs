@@ -513,7 +513,7 @@ impl TriMesh {
             let uvca = uvc - uva;
 
             let d = uvba.x * uvca.y - uvca.x * uvba.y;
-            if d.abs() > 0.00001 {
+            if d.abs() > 0.0000001 {
                 let r = 1.0 / d;
                 let sdir = (ba * uvca.y - ca * uvba.y) * r;
                 let tdir = (ca * uvba.x - ba * uvca.x) * r;
